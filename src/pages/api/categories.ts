@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import mongoose from 'mongoose';
 import { connectToDatabase } from '../../../utils/dbConnect';
 import { ICategory, Category } from '../../../models/category'; // Adjust the path if necessary
 
@@ -9,8 +8,21 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     switch (req.method) {
         case 'GET':
             try {
-                const categories: ICategory[] = await Category.find();
-                return res.status(200).json(categories);
+                // Check if an _id is provided in the query
+                const { id } = req.query;
+        
+                if (id) {
+                    // Fetch a single category by its _id
+                    const category: ICategory | null = await Category.findById(id);
+                    if (!category) {
+                        return res.status(404).json({ error: 'Category not found' });
+                    }
+                    return res.status(200).json(category);
+                } else {
+                    // Fetch all categories
+                    const categories: ICategory[] = await Category.find();
+                    return res.status(200).json(categories);
+                }
             } catch (error) {
                 console.error(error);
                 return res.status(500).json({ error: 'Error fetching categories' });

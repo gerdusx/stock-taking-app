@@ -1,5 +1,4 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import mongoose from 'mongoose';
 import { connectToDatabase } from '../../../utils/dbConnect';
 import { IStockItem, StockItem } from '../../../models/stockItem';
 
