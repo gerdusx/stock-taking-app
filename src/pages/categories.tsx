@@ -9,6 +9,7 @@ import { Formik } from 'formik';
 import * as yup from "yup";
 import { CategoryCreateRequest, createCategory, getCategories } from '@/services/categoryService';
 import { ICategory } from '../../models/category';
+import { DataGrid, GridColDef } from '@mui/x-data-grid';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -39,6 +40,10 @@ export default function Categories() {
         name: yup.string().required("This field is required"),
     });
 
+    const cols:GridColDef<ICategory>[] = [
+        { field: "name" , headerName: "Category", flex: 1 }
+    ]
+
     const handleFormSubmit = async (category: CategoryCreateRequest) => {
         console.log(category);
         const results = await createCategory(category);
@@ -57,6 +62,14 @@ export default function Categories() {
                     </Button>
                 </Box>
 
+            </Box>
+            <Box>
+                <DataGrid
+                    rows={categories}
+                    columns={cols}
+                    getRowId={(cat) => cat._id}
+                    density="compact"
+                />
             </Box>
             <Drawer
                 sx={{
